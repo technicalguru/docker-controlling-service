@@ -1,7 +1,7 @@
 /**
  * 
  */
-package rs.controlling.data;
+package rs.controlling.data.account;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

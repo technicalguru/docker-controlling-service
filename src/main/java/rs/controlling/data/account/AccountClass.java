@@ -1,7 +1,7 @@
 /**
  * 
  */
-package rs.controlling.data;
+package rs.controlling.data.account;
 
 /**
  * Account Class according German SKR03.
@@ -21,7 +21,21 @@ public enum AccountClass {
 	SALES("8"),
 	CARRY_FORWARD_AND_ADJUSTMENT("9");
 	
+	private String classNumber;
+	
 	private AccountClass(String classNumber) {
-		
+		this.classNumber = classNumber;
 	}
+	
+	public String getClassNumber() {
+		return classNumber;
+	}
+	
+	public static AccountClass get(String classNumber) {
+		for (AccountClass c : AccountClass.values()) {
+			if (c.getClassNumber().equals(classNumber)) return c;
+		}
+		return null;
+	}
+	
 }

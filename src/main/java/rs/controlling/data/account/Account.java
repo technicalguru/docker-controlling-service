@@ -1,7 +1,7 @@
 /**
  * 
  */
-package rs.controlling.data;
+package rs.controlling.data.account;
 
 import java.util.Objects;
 
@@ -9,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Transient;
+
+import rs.controlling.ControllingException;
 
 /**
  * A controlling account (German SKR model).
@@ -29,7 +31,7 @@ public class Account {
 	// These fields are computed
 	private @Transient AccountClass accountClass;
 	private @Transient AccountGroup accountGroup;
-	private @Transient String subNumber;
+	private @Transient int subNumber;
 		
 	/**
 	 * Constructor.
@@ -78,7 +80,16 @@ public class Account {
 	 * @param accountNumber the accountNumber to set
 	 */
 	public void setAccountNumber(String accountNumber) {
+		if ((accountNumber == null) || (accountNumber.length() < 4)) throw new ControllingException("Invalid account number: "+accountNumber);
+		try {
+			Integer.parseInt(accountNumber);
+		} catch (NumberFormatException e) {
+			throw new ControllingException("Invalid account number: "+accountNumber);
+		}
 		this.accountNumber = accountNumber;
+		this.accountClass  = AccountClass.get(accountNumber.substring(0, 1));
+		this.accountGroup  = AccountGroup.get(accountNumber.substring(1, 2));
+		this.subNumber     = Integer.parseInt(accountNumber.substring(2));
 	}
 
 	/**
@@ -154,7 +165,7 @@ public class Account {
 	/**
 	 * @return the subNumber
 	 */
-	public String getSubNumber() {
+	public int getSubNumber() {
 		return subNumber;
 	}
 
