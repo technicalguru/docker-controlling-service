@@ -3,15 +3,24 @@
  */
 package rs.controlling.data.ledger;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import rs.controlling.data.ledger.json.AccountPostingTypeDeserializer;
+import rs.controlling.data.ledger.json.AccountPostingTypeSerializer;
+
+
 /**
  * Type of an account posting.
  * @author ralph
  *
  */
+@JsonSerialize(using = AccountPostingTypeSerializer.class)
+@JsonDeserialize(using = AccountPostingTypeDeserializer.class)
 public enum AccountPostingType {
 
-	DEBIT("H"),
-	CREDIT("S");
+	DEBIT("S"),
+	CREDIT("H");
 	
 	private String typeId;
 	

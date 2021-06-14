@@ -1,10 +1,18 @@
 package rs.controlling.data.account;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import rs.controlling.data.account.json.AccountTypeDeserializer;
+import rs.controlling.data.account.json.AccountTypeSerializer;
+
 /**
  * Is it aktiva or passiva account.
  * @author ralph
  *
  */
+@JsonSerialize(using = AccountTypeSerializer.class)
+@JsonDeserialize(using = AccountTypeDeserializer.class)
 public enum AccountType {
 
 	AKTIVA("A"),

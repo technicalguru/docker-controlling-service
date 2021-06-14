@@ -3,14 +3,15 @@
  */
 package rs.controlling.data.ledger;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-
-import rs.baselib.util.RsDate;
-import rs.baselib.util.RsYear;
+import javax.persistence.PostLoad;
 
 /**
  * A Posting to form the ledger in an account
@@ -25,8 +26,8 @@ public class Posting {
 	private PostingType postingType;
 	private String source;
 	private String sourceReference;
-	private RsDate creationTime;
-	private RsYear fiscalYear;
+	private ZonedDateTime creationTime;
+	private int fiscalYear;
 	private String description;
 	
 	/**
@@ -42,18 +43,16 @@ public class Posting {
 	 * @param source
 	 * @param sourceReference
 	 * @param creationTime
-	 * @param fiscalYear
 	 * @param description
 	 */
-	public Posting(String postingNumber, PostingType postingType, String source, String sourceReference, RsDate creationTime, RsYear fiscalYear, String description) {
+	public Posting(String postingNumber, PostingType postingType, String source, String sourceReference, ZonedDateTime creationTime, String description) {
 		super();
-		this.postingNumber = postingNumber;
-		this.postingType = postingType;
-		this.source = source;
-		this.sourceReference = sourceReference;
-		this.creationTime = creationTime;
-		this.fiscalYear = fiscalYear;
-		this.description = description;
+		setPostingNumber(postingNumber);
+		setPostingType(postingType);
+		setSource(source);
+		setSourceReference(sourceReference);
+		setCreationTime(creationTime);
+		setDescription(description);
 	}
 
 	/**
@@ -129,29 +128,23 @@ public class Posting {
 	/**
 	 * @return the creationTime
 	 */
-	public RsDate getCreationTime() {
+	public ZonedDateTime getCreationTime() {
 		return creationTime;
 	}
 
 	/**
 	 * @param creationTime the creationTime to set
 	 */
-	public void setCreationTime(RsDate creationTime) {
-		this.creationTime = creationTime;
+	public void setCreationTime(ZonedDateTime creationTime) {
+		this.creationTime = creationTime.withZoneSameInstant(ZoneId.of("UTC")).truncatedTo(ChronoUnit.SECONDS);
+		this.fiscalYear   = this.creationTime.getYear();
 	}
 
 	/**
 	 * @return the fiscalYear
 	 */
-	public RsYear getFiscalYear() {
+	public int getFiscalYear() {
 		return fiscalYear;
-	}
-
-	/**
-	 * @param fiscalYear the fiscalYear to set
-	 */
-	public void setFiscalYear(RsYear fiscalYear) {
-		this.fiscalYear = fiscalYear;
 	}
 
 	/**
@@ -186,5 +179,11 @@ public class Posting {
 		return "Posting [postingNumber=" + postingNumber + "]";
 	}
 
-	
+	@PostLoad
+	private void onLoad() {
+		if (!creationTime.getZone().getId().equals("UTC")) {
+			creationTime = creationTime.withZoneSameInstant(ZoneId.of("UTC"));
+		}
+		this.fiscalYear   = creationTime.getYear();
+	}	
 }

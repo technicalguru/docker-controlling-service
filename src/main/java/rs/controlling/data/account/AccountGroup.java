@@ -1,10 +1,18 @@
 package rs.controlling.data.account;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import rs.controlling.data.account.json.AccountGroupDeserializer;
+import rs.controlling.data.account.json.AccountGroupSerializer;
+
 /**
  * Sub Group in a account class.
  * @author ralph
  *
  */
+@JsonSerialize(using = AccountGroupSerializer.class)
+@JsonDeserialize(using = AccountGroupDeserializer.class)
 public enum AccountGroup {
 
 	GROUP_0("0"),

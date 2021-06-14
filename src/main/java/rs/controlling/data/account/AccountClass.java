@@ -3,11 +3,19 @@
  */
 package rs.controlling.data.account;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import rs.controlling.data.account.json.AccountClassDeserializer;
+import rs.controlling.data.account.json.AccountClassSerializer;
+
 /**
  * Account Class according German SKR03.
  * @author ralph
  *
  */
+@JsonSerialize(using = AccountClassSerializer.class)
+@JsonDeserialize(using = AccountClassDeserializer.class)
 public enum AccountClass {
 
 	INVESTMENT_AND_CAPITAL("0"),

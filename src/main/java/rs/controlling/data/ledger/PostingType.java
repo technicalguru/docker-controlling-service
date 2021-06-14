@@ -3,11 +3,19 @@
  */
 package rs.controlling.data.ledger;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import rs.controlling.data.ledger.json.PostingTypeDeserializer;
+import rs.controlling.data.ledger.json.PostingTypeSerializer;
+
 /**
  * Type of a posting.
  * @author ralph
  *
  */
+@JsonSerialize(using = PostingTypeSerializer.class)
+@JsonDeserialize(using = PostingTypeDeserializer.class)
 public enum PostingType {
 
 	REDUCTION("R"),
