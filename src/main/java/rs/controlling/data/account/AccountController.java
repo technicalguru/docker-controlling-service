@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  */
 @RestController
+@RequestMapping(path = "/accounts")
 public class AccountController {
 
 	private final AccountRepository repository;
@@ -36,26 +38,26 @@ public class AccountController {
 	 */
 	// Aggregate root
 	// tag::get-aggregate-root[]
-	@GetMapping("/accounts")
+	@GetMapping
 	public List<Account> list() {
 		return repository.findAll();
 	}
 	// end::get-aggregate-root[]
 	
-	@PostMapping("/accounts")
+	@PostMapping
 	public Account newAccount(@RequestBody Account newAccount) {
 		return repository.save(newAccount);
 	}
 
 	// TODO never on uid, better on number
-	@GetMapping("/accounts/{id}")
+	@GetMapping("/{id}")
 	public Account get(@PathVariable Long id) {
 		return repository.findById(id)
 				.orElseThrow(() -> new AccountNotFoundException(id));
 	}
 
 	// TODO never on uid, better on number
-	@PutMapping("/accounts/{id}")
+	@PutMapping("/{id}")
 	public Account update(@RequestBody Account newAccount, @PathVariable Long id) {
 
 		return repository.findById(id)
@@ -69,7 +71,7 @@ public class AccountController {
 
 	// TODO never on uid, better on number
 	// TODO deactivate account / delete when no bookings only
-	@DeleteMapping("/accounts/{id}")
+	@DeleteMapping("/{id}")
 	public void delete(@PathVariable Long id) {
 		repository.deleteById(id);
 	}
