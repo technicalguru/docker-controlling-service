@@ -1,7 +1,7 @@
 /**
  * 
  */
-package rs.controlling.data.account;
+package rs.controlling.data.ledger;
 
 import rs.controlling.ControllingException;
 
@@ -10,7 +10,7 @@ import rs.controlling.ControllingException;
  * @author ralph
  *
  */
-public class AccountNotFoundException extends ControllingException {
+public class PostingNotFoundException extends ControllingException {
 
 	/**
 	 * Serial UID
@@ -20,8 +20,8 @@ public class AccountNotFoundException extends ControllingException {
 	/**
 	 * Constructor
 	 */
-	public AccountNotFoundException(String number) {
-		super("No such account: "+number);
+	public PostingNotFoundException(Long uid) {
+		super("No such posting: "+uid);
 	}
 
 }

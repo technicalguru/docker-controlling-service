@@ -3,11 +3,13 @@
  */
 package rs.controlling.data.account;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.PostLoad;
 import javax.persistence.Transient;
 
 import rs.controlling.ControllingException;
@@ -27,6 +29,8 @@ public class Account {
 	private AccountSubType accountSubType;
 	private String name;
 	private String description;
+	private Boolean active;
+	private BigDecimal balance;
 	
 	// These fields are computed
 	private @Transient AccountClass accountClass;
@@ -47,12 +51,14 @@ public class Account {
 	 * @param name
 	 * @param description
 	 */
-	public Account(String accountNumber, AccountType accountType, AccountSubType accountSubType, String name, String description) {
+	public Account(String accountNumber, AccountType accountType, AccountSubType accountSubType, String name, String description, Boolean active) {
 		setAccountNumber(accountNumber);
 		setAccountType(accountType);
 		setAccountSubType(accountSubType);
 		setName(name);
 		setDescription(description);
+		setActive(active);
+		this.balance = BigDecimal.ZERO;
 	}
 
 	/**
@@ -87,9 +93,7 @@ public class Account {
 			throw new ControllingException("Invalid account number: "+accountNumber);
 		}
 		this.accountNumber = accountNumber;
-		this.accountClass  = AccountClass.get(accountNumber.substring(0, 1));
-		this.accountGroup  = AccountGroup.get(accountNumber.substring(1, 2));
-		this.subNumber     = Integer.parseInt(accountNumber.substring(2));
+		onLoad();
 	}
 
 	/**
@@ -169,6 +173,35 @@ public class Account {
 		return subNumber;
 	}
 
+	/**
+	 * @return the balance
+	 */
+	public BigDecimal getBalance() {
+		return balance;
+	}
+
+	public BigDecimal debit(BigDecimal other) {
+		return balance;
+	}
+	
+	public BigDecimal credit(BigDecimal other) {
+		return balance;
+	}
+	
+	/**
+	 * @return the active
+	 */
+	public Boolean isActive() {
+		return active;
+	}
+
+	/**
+	 * @param active the active to set
+	 */
+	public void setActive(Boolean active) {
+		this.active = active;
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(accountNumber);
@@ -187,5 +220,15 @@ public class Account {
 		return "Account [accountNumber=" + accountNumber + ", name=" + name + "]";
 	}
 	
+	@PostLoad
+	private void onLoad() {
+		this.accountClass  = AccountClass.get(accountNumber.substring(0, 1));
+		this.accountGroup  = AccountGroup.get(accountNumber.substring(1, 2));
+		this.subNumber     = Integer.parseInt(accountNumber.substring(2));
+
+	}
 	
+	public static Account from(String number) {
+		return new Account(number, null, null, null, null, null);
+	}
 }
