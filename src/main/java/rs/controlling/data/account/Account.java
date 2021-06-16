@@ -23,6 +23,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import rs.controlling.ControllingException;
 import rs.controlling.data.ledger.AccountPosting;
+import rs.controlling.data.ledger.AccountPostingType;
 
 /**
  * A controlling account (German SKR model).
@@ -197,11 +198,27 @@ public class Account {
 		return balance;
 	}
 
+	/**
+	 * @return the balance
+	 */
+	public void setBalance(BigDecimal value) {
+		balance = value;
+	}
+
+	public BigDecimal apply(AccountPostingType type, BigDecimal value) {
+		if (type.equals(AccountPostingType.CREDIT)) {
+			return credit(value);
+		}
+		return debit(value);
+	}
+	
 	public BigDecimal debit(BigDecimal other) {
+		balance = balance.subtract(other);
 		return balance;
 	}
 	
 	public BigDecimal credit(BigDecimal other) {
+		balance = balance.add(other);
 		return balance;
 	}
 	

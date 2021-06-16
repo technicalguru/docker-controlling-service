@@ -1,7 +1,7 @@
 /**
  * 
  */
-package rs.controlling.data.ledger;
+package rs.controlling.exception;
 
 import rs.controlling.ControllingException;
 

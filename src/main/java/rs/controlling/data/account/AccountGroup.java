@@ -3,6 +3,7 @@ package rs.controlling.data.account;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import rs.controlling.data.ControllingEnum;
 import rs.controlling.data.account.json.AccountGroupDeserializer;
 import rs.controlling.data.account.json.AccountGroupSerializer;
 
@@ -13,7 +14,7 @@ import rs.controlling.data.account.json.AccountGroupSerializer;
  */
 @JsonSerialize(using = AccountGroupSerializer.class)
 @JsonDeserialize(using = AccountGroupDeserializer.class)
-public enum AccountGroup {
+public enum AccountGroup implements ControllingEnum {
 
 	GROUP_0("0"),
 	GROUP_1("1"),
@@ -32,13 +33,17 @@ public enum AccountGroup {
 		this.groupNumber = groupNumber;
 	}
 	
-	public String getGroupNumber() {
+	public String getId() {
 		return groupNumber;
+	}
+	
+	public String getDescription() {
+		return "Group "+getId();
 	}
 	
 	public static AccountGroup get(String groupNumber) {
 		for (AccountGroup c : AccountGroup.values()) {
-			if (c.getGroupNumber().equals(groupNumber)) return c;
+			if (c.getId().equals(groupNumber)) return c;
 		}
 		return null;
 	}

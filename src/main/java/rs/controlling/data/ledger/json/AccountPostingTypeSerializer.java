@@ -19,7 +19,7 @@ public class AccountPostingTypeSerializer extends JsonSerializer<AccountPostingT
 
 	@Override
 	public void serialize(AccountPostingType value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-		gen.writeString(value.getTypeId());		
+		gen.writeString(value.getId());		
 	}
 
 	

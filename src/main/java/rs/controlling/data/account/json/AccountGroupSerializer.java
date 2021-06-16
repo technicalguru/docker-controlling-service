@@ -19,7 +19,7 @@ public class AccountGroupSerializer extends JsonSerializer<AccountGroup> {
 
 	@Override
 	public void serialize(AccountGroup value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-		gen.writeString(value.getGroupNumber());		
+		gen.writeString(value.getId());		
 	}
 
 	

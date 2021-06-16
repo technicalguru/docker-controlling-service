@@ -66,7 +66,7 @@ public class Posting {
 		setPostingType(postingType);
 		setSource(source);
 		setSourceReference(sourceReference);
-		setCreationTime(creationTime);
+		setCreationTime(creationTime == null ? ZonedDateTime.now(ZoneId.of("UTC")) : creationTime);
 		setDescription(description);
 	}
 

@@ -6,6 +6,7 @@ package rs.controlling.service;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 
+import rs.controlling.data.account.Account;
 import rs.controlling.data.ledger.PostingType;
 
 /**
@@ -15,7 +16,6 @@ import rs.controlling.data.ledger.PostingType;
  */
 public class PostingRequest {
 
-	private String postingNumber;
 	private PostingType postingType;
 	private String source;
 	private String sourceReference;
@@ -32,19 +32,71 @@ public class PostingRequest {
 	}
 
 	/**
-	 * @return the postingNumber
+	 * Full Constructor.
+	 * @param postingType
+	 * @param source
+	 * @param sourceReference
+	 * @param creationTime
+	 * @param description
+	 * @param amount
+	 * @param accountNumber1
+	 * @param accountNumber2
 	 */
-	public String getPostingNumber() {
-		return postingNumber;
+	public PostingRequest(PostingType postingType, String source, String sourceReference, ZonedDateTime creationTime, String description, BigDecimal amount, String accountNumber1, String accountNumber2) {
+		super();
+		this.postingType = postingType;
+		this.source = source;
+		this.sourceReference = sourceReference;
+		this.creationTime = creationTime;
+		this.description = description;
+		this.amount = amount;
+		this.accountNumber1 = accountNumber1;
+		this.accountNumber2 = accountNumber2;
 	}
 
 	/**
-	 * @param postingNumber the postingNumber to set
+	 * Full Constructor.
+	 * @param postingType
+	 * @param source
+	 * @param sourceReference
+	 * @param creationTime
+	 * @param description
+	 * @param amount
+	 * @param accountNumber1
+	 * @param accountNumber2
 	 */
-	public void setPostingNumber(String postingNumber) {
-		this.postingNumber = postingNumber;
+	public PostingRequest(PostingType postingType, String source, String sourceReference, ZonedDateTime creationTime, String description, BigDecimal amount, Account account1, Account account2) {
+		this(postingType, source, sourceReference, creationTime, description, amount, account1.getAccountNumber(), account2.getAccountNumber());
+	}
+	
+	/**
+	 * Constructor without time.
+	 * @param postingType
+	 * @param source
+	 * @param sourceReference
+	 * @param description
+	 * @param amount
+	 * @param accountNumber1
+	 * @param accountNumber2
+	 */
+	public PostingRequest(PostingType postingType, String source, String sourceReference, String description, BigDecimal amount, String accountNumber1, String accountNumber2) {
+		this(postingType, source, sourceReference, null, description, amount, accountNumber1, accountNumber2);
 	}
 
+	/**
+	 * Constructor without time.
+	 * @param postingType
+	 * @param source
+	 * @param sourceReference
+	 * @param description
+	 * @param amount
+	 * @param accountNumber1
+	 * @param accountNumber2
+	 */
+	public PostingRequest(PostingType postingType, String source, String sourceReference, String description, BigDecimal amount, Account account1, Account account2) {
+		this(postingType, source, sourceReference, null, description, amount, account1.getAccountNumber(), account2.getAccountNumber());
+	}
+	
 	/**
 	 * @return the postingType
 	 */

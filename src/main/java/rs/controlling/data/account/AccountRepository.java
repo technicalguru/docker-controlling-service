@@ -3,6 +3,8 @@
  */
 package rs.controlling.data.account;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -12,5 +14,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface AccountRepository extends JpaRepository<Account, Long> {
 
-	Account findByAccountNumber(String accountNumber);
+	Account       findByAccountNumber(String accountNumber);
+	List<Account> findByAccountTypeAndAccountSubType(AccountType accountType, AccountSubType accountSubType);
+	List<Account> findByAccountType(AccountType accountType);
+	List<Account> findByAccountSubType(AccountSubType accountSubType);
+	
 }

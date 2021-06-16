@@ -13,4 +13,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface PostingRepository extends JpaRepository<Posting, Long> {
 
 	public Posting findByPostingNumber(String number);
+	public Posting findBySourceAndSourceReference(String source, String sourceReference);
 }
