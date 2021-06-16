@@ -7,8 +7,13 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import rs.controlling.data.account.Account;
 
@@ -18,27 +23,35 @@ import rs.controlling.data.account.Account;
  *
  */
 @Entity
+@JsonIgnoreProperties({"​hibernateLazyInitializer", "handler"})
 public class AccountPosting {
 
+	@JsonIgnore
 	private @Id @GeneratedValue Long uid;
 
-	private String postingNumber;
-	private String accountNumber;
-	private AccountPostingType postingType;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Posting posting;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+	private Account account;
+
+    private AccountPostingType postingType;
 	private BigDecimal amount;
-	
+
 	/**
 	 * Constructor
 	 */
 	public AccountPosting() {
 	}
 
-	public AccountPosting(String postingNumber, String accountNumber, AccountPostingType postingType, BigDecimal amount) {
+	public AccountPosting(Posting posting, Account account, AccountPostingType postingType, BigDecimal amount) {
 		super();
-		this.postingNumber = postingNumber;
-		this.accountNumber = accountNumber;
-		this.postingType = postingType;
-		this.amount = amount;
+		setPosting(posting);
+		setAccount(account);
+		setPostingType(postingType);
+		setAmount(amount);
+		posting.getAccountPostings().add(this);
+		account.getAccountPostings().add(this);
 	}
 
 	/**
@@ -56,31 +69,31 @@ public class AccountPosting {
 	}
 
 	/**
-	 * @return the postingNumber
+	 * @return the posting
 	 */
-	public String getPostingNumber() {
-		return postingNumber;
+	public Posting getPosting() {
+		return posting;
 	}
 
 	/**
-	 * @param postingNumber the postingNumber to set
+	 * @param posting the posting to set
 	 */
-	public void setPostingNumber(String postingNumber) {
-		this.postingNumber = postingNumber;
+	public void setPosting(Posting posting) {
+		this.posting = posting;
 	}
 
 	/**
-	 * @return the accountNumber
+	 * @return the account
 	 */
-	public String getAccountNumber() {
-		return accountNumber;
+	public Account getAccount() {
+		return account;
 	}
 
 	/**
-	 * @param accountNumber the accountNumber to set
+	 * @param account the account to set
 	 */
-	public void setAccountNumber(String accountNumber) {
-		this.accountNumber = accountNumber;
+	public void setAccount(Account account) {
+		this.account = account;
 	}
 
 	/**
@@ -113,7 +126,7 @@ public class AccountPosting {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(accountNumber, postingNumber);
+		return Objects.hash(account.getAccountNumber(), posting.getPostingNumber());
 	}
 
 	@Override
@@ -121,16 +134,16 @@ public class AccountPosting {
 		if (this == obj) return true;
 		if (!(obj instanceof AccountPosting)) return false;
 		AccountPosting other = (AccountPosting) obj;
-		return Objects.equals(accountNumber, other.accountNumber) && Objects.equals(postingNumber, other.postingNumber);
+		return Objects.equals(account, other.account) && Objects.equals(posting, other.posting);
 	}
 
 	@Override
 	public String toString() {
-		return "AccountPosting [postingNumber=" + postingNumber + ", accountNumber=" + accountNumber + ", postingType="
+		return "AccountPosting [postingNumber=" + posting.getPostingNumber() + ", accountNumber=" + account.getAccountNumber() + ", postingType="
 				+ postingType + ", amount=" + amount + "]";
 	}
 
 	public static AccountPosting from(Account account) {
-		return new AccountPosting(null, account.getAccountNumber(), null, null);
+		return new AccountPosting(null, account, null, null);
 	}
 }

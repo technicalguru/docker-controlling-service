@@ -4,15 +4,25 @@
 package rs.controlling.data.account;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.PostLoad;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import rs.controlling.ControllingException;
+import rs.controlling.data.ledger.AccountPosting;
 
 /**
  * A controlling account (German SKR model).
@@ -20,8 +30,11 @@ import rs.controlling.ControllingException;
  *
  */
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "accountNumber")
+@JsonIgnoreProperties({"​hibernateLazyInitializer", "handler"})
 public class Account {
 
+	@JsonIgnore
 	private @Id @GeneratedValue Long uid;
 	
 	private String accountNumber;
@@ -37,6 +50,10 @@ public class Account {
 	private @Transient AccountGroup accountGroup;
 	private @Transient int subNumber;
 		
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "account")
+	@JsonIgnore
+	private List<AccountPosting> accountPostings = new ArrayList<>();
+
 	/**
 	 * Constructor.
 	 */
@@ -200,6 +217,20 @@ public class Account {
 	 */
 	public void setActive(Boolean active) {
 		this.active = active;
+	}
+
+	/**
+	 * @return the accountPostings
+	 */
+	public List<AccountPosting> getAccountPostings() {
+		return accountPostings;
+	}
+
+	/**
+	 * @param accountPostings the accountPostings to set
+	 */
+	public void setAccountPostings(List<AccountPosting> accountPostings) {
+		this.accountPostings = accountPostings;
 	}
 
 	@Override

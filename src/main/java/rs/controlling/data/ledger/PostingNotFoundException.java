@@ -20,8 +20,8 @@ public class PostingNotFoundException extends ControllingException {
 	/**
 	 * Constructor
 	 */
-	public PostingNotFoundException(Long uid) {
-		super("No such posting: "+uid);
+	public PostingNotFoundException(String number) {
+		super("No such posting: "+number);
 	}
 
 }

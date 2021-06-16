@@ -13,11 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import rs.controlling.data.account.AccountRepository;
-import rs.controlling.data.ledger.AccountPostingRepository;
 import rs.controlling.data.ledger.Posting;
-import rs.controlling.data.ledger.PostingNotFoundException;
-import rs.controlling.data.ledger.PostingRepository;
+import rs.controlling.service.PostingRequest;
+import rs.controlling.service.PostingService;
 
 /**
  * The REST controller
@@ -29,11 +27,7 @@ import rs.controlling.data.ledger.PostingRepository;
 public class PostingController {
 
 	@Autowired
-	private PostingRepository repository;
-	@Autowired
-	private AccountPostingRepository detailsRepository;
-	@Autowired
-	private AccountRepository accountRepository;
+	private PostingService service;
 
 	/**
 	 * Constructor.
@@ -47,19 +41,18 @@ public class PostingController {
 	 */
 	@GetMapping
 	public List<Posting> list() {
-		return repository.findAll();
+		return service.list();
 	}
 	
 	@PostMapping
-	public Posting newPosting(@RequestBody Posting newPosting) {
-		return repository.save(newPosting);
+	public Posting create(@RequestBody PostingRequest newPosting) {
+		return service.create(newPosting);
 	}
 
 	// TODO never on uid, better on number
-	@GetMapping("/{id}")
-	public Posting get(@PathVariable Long id) {
-		return repository.findById(id)
-				.orElseThrow(() -> new PostingNotFoundException(id));
+	@GetMapping("/{number}")
+	public Posting get(@PathVariable String number) {
+		return service.findById(number);
 	}
 
 }

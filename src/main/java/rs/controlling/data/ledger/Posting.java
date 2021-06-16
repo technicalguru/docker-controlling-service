@@ -6,20 +6,32 @@ package rs.controlling.data.ledger;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.PostLoad;
+
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 /**
  * A Posting to form the ledger in an account
  * @author ralph
  */
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "postingNumber")
+@JsonIgnoreProperties({"​hibernateLazyInitializer", "handler"})
 public class Posting {
 
+	@JsonIgnore
 	private @Id @GeneratedValue Long uid;
 
 	private String postingNumber;
@@ -29,6 +41,9 @@ public class Posting {
 	private ZonedDateTime creationTime;
 	private int fiscalYear;
 	private String description;
+	
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "posting")
+	private List<AccountPosting> accountPostings = new ArrayList<>();
 	
 	/**
 	 * Constructor.
@@ -159,6 +174,20 @@ public class Posting {
 	 */
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	/**
+	 * @return the accountPostings
+	 */
+	public List<AccountPosting> getAccountPostings() {
+		return accountPostings;
+	}
+
+	/**
+	 * @param accountPostings the accountPostings to set
+	 */
+	public void setAccountPostings(List<AccountPosting> accountPostings) {
+		this.accountPostings = accountPostings;
 	}
 
 	@Override
