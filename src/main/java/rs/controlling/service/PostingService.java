@@ -50,7 +50,7 @@ public class PostingService {
 	public List<Posting> list() {
 		return postings.findAll();
 	}
-	
+
 	public Posting create(PostingRequest posting) {
 		// Check completeness
 		checkComplete(posting);
@@ -62,7 +62,7 @@ public class PostingService {
 			throw new InvalidAccountException(account1.getAccountNumber());
 		}
 		checkAccountTypes(posting.getPostingType(), account1, account2);
-		
+
 		// Create the posting and the details
 		Posting rc = new Posting(nextPostingNumber(), posting.getPostingType(), posting.getSource(), posting.getSourceReference(), posting.getCreationTime(), posting.getDescription());
 		rc = postings.save(rc);
@@ -71,13 +71,13 @@ public class PostingService {
 
 		return rc;
 	}
-	
+
 	public Posting findById(String number) {
 		Posting rc = postings.findByPostingNumber(number);
 		if (rc == null) throw new PostingNotFoundException(number);
 		return rc;
 	}
-	
+
 	protected AccountPosting createAccountDetails(boolean isFrom, PostingRequest request, Posting posting, Account account) {
 		AccountPosting rc = null;
 		// Find out how to create
@@ -94,10 +94,10 @@ public class PostingService {
 			break;
 		}
 		rc = details.save(rc);
-		
+
 		// Update the posting
 		posting = postings.save(posting);
-		
+
 		// Update the account
 		if (rc.getPostingType().equals(AccountPostingType.CREDIT)) {
 			account.credit(rc.getAmount());
@@ -105,10 +105,10 @@ public class PostingService {
 			account.debit(rc.getAmount());
 		}
 		accounts.save(account);
-		
+
 		return rc;
 	};
-	
+
 	protected void checkComplete(PostingRequest posting) {
 		if (posting.getPostingType() == null) {
 			throw new IncompleteRequestException("postingType", posting.getPostingType());
@@ -126,13 +126,29 @@ public class PostingService {
 			throw new IncompleteRequestException("sourceReference", posting.getSourceReference());
 		}
 	}
-	
+
 	protected void checkPostingExists(PostingRequest posting) {
-		Posting p = null;
 		// Check source and source Reference (must not exist)
-		p = postings.findBySourceAndSourceReference(posting.getSource(), posting.getSourceReference());
-		if (p != null) {
-			throw new PostingAlreadyExistsException(posting.getSource(), posting.getSourceReference());
+		BigDecimal  amount = posting.getAmount();
+		String      n1     = posting.getAccountNumber1();
+		String      n2     = posting.getAccountNumber2();
+		PostingType type   = posting.getPostingType();
+
+		// Search for posting with same reference, posting type, accounts and amount
+		for (Posting p : postings.findBySourceAndSourceReference(posting.getSource(), posting.getSourceReference())) {
+			if (p.getPostingType().equals(type)) {
+				int cnt = 0;
+				for (AccountPosting ap : p.getAccountPostings()) {
+					if (ap.getAmount().compareTo(amount) == 0) {
+						String n = ap.getAccount().getAccountNumber();
+						if (n.equals(n1)) cnt++;
+						else if (n.equals(n2)) cnt++;
+					}
+				}
+				if (cnt > 1) {
+					throw new PostingAlreadyExistsException(posting.getSource(), posting.getSourceReference(), posting.getAmount(), posting.getAccountNumber1(), posting.getAccountNumber2());
+				}
+			}
 		}
 	}
 
@@ -145,7 +161,7 @@ public class PostingService {
 			throw new InvalidAmountException(amount);
 		}
 	}
-	
+
 	protected Account checkAccountExists(String accountNumber) {
 		Account account = accounts.findByAccountNumber(accountNumber);
 		if (account == null) {
@@ -153,7 +169,7 @@ public class PostingService {
 		}
 		return account;
 	}
-	
+
 	protected void checkAccountTypes(PostingType postingType, Account account1, Account account2) {
 		// Depending on type: account aktiva/passiva type
 		switch (postingType) {
@@ -175,13 +191,13 @@ public class PostingService {
 			break;
 		}
 	}
-	
+
 	protected void checkAccountType(Account account, AccountType expected) {
 		if (!account.getAccountType().equals(expected)) {
 			throw new InvalidAccountException(account.getAccountNumber(), account.getAccountType(), expected);
 		}
 	}
-	
+
 	protected String nextPostingNumber(String...names) {
 		String rc = null;
 		do {

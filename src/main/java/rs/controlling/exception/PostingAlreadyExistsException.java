@@ -3,6 +3,8 @@
  */
 package rs.controlling.exception;
 
+import java.math.BigDecimal;
+
 import rs.controlling.ControllingException;
 
 /**
@@ -27,8 +29,8 @@ public class PostingAlreadyExistsException extends ControllingException {
 	/**
 	 * Constructor with source reference.
 	 */
-	public PostingAlreadyExistsException(String source, String sourceReference) {
-		super("Posting already exists: src="+source+", ref="+sourceReference);
+	public PostingAlreadyExistsException(String source, String sourceReference, BigDecimal amount, String number1, String number2) {
+		super("Posting already exists: src="+source+", ref="+sourceReference+", "+amount+": "+number1+" -> "+number2);
 	}
 
 }

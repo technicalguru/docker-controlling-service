@@ -3,6 +3,8 @@
  */
 package rs.controlling.data.ledger;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -13,5 +15,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface PostingRepository extends JpaRepository<Posting, Long> {
 
 	public Posting findByPostingNumber(String number);
-	public Posting findBySourceAndSourceReference(String source, String sourceReference);
+	public List<Posting> findBySourceAndSourceReference(String source, String sourceReference);
 }
