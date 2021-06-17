@@ -6,16 +6,21 @@ package rs.controlling.data.ledger;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import rs.controlling.data.account.Account;
+import rs.controlling.data.converter.AccountPostingTypeConverter;
 
 /**
  * Details about a posting on an account
@@ -24,10 +29,13 @@ import rs.controlling.data.account.Account;
  */
 @Entity
 @JsonIgnoreProperties({"​hibernateLazyInitializer", "handler"})
+@Table(name = "ctrl_account_postings")
 public class AccountPosting {
 
 	@JsonIgnore
-	private @Id @GeneratedValue Long uid;
+	@Id 
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long uid;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Posting posting;
@@ -35,6 +43,8 @@ public class AccountPosting {
     @ManyToOne(fetch = FetchType.LAZY)
 	private Account account;
 
+	@Column(name = "posting_type")
+	@Convert(converter = AccountPostingTypeConverter.class)
     private AccountPostingType postingType;
 	private BigDecimal amount;
 

@@ -11,16 +11,22 @@ import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.PostLoad;
+import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
+import rs.controlling.data.converter.PostingTypeConverter;
 
 /**
  * A Posting to form the ledger in an account
@@ -29,16 +35,25 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "postingNumber")
 @JsonIgnoreProperties({"​hibernateLazyInitializer", "handler"})
+@Table(name = "ctrl_postings")
 public class Posting {
 
 	@JsonIgnore
-	private @Id @GeneratedValue Long uid;
+	@Id 
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long uid;
 
+	@Column(name = "posting_number")
 	private String postingNumber;
+	@Column(name = "posting_type")
+	@Convert(converter = PostingTypeConverter.class)
 	private PostingType postingType;
 	private String source;
+	@Column(name = "source_ref")
 	private String sourceReference;
+	@Column(name = "creation_time")
 	private ZonedDateTime creationTime;
+	@Column(name = "fiscal_year")
 	private int fiscalYear;
 	private String description;
 	

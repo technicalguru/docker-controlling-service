@@ -15,3 +15,32 @@ CREATE TABLE `buchhaltung`.`ctrl_accounts` (
 	
 	PRIMARY KEY (`uid`)
 ) ENGINE = InnoDB COMMENT = 'Accounts'; 
+
+CREATE TABLE `buchhaltung`.`ctrl_postings` (
+	`uid` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT , 
+	`posting_number` VARCHAR(64) NOT NULL , 
+	`posting_type` VARCHAR(10) NOT NULL , 
+	`source` VARCHAR(50) NOT NULL , 
+	`source_ref` VARCHAR(50) NOT NULL , 
+	`creation_time` DATETIME NOT NULL , 
+	`fiscal_year` INT(6) UNSIGNED NOT NULL , 
+	`description` TEXT NOT NULL , 
+	
+	PRIMARY KEY (`uid`)
+) ENGINE = InnoDB COMMENT = 'posting main records';
+	
+CREATE TABLE `buchhaltung`.`ctrl_account_postings` (
+	`uid` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT ,
+	`posting_uid` INT(10) UNSIGNED NOT NULL , 
+	`account_uid` INT(10) UNSIGNED NOT NULL , 
+	`posting_type` VARCHAR(10) NOT NULL , 
+	`amount` DECIMAL(10,2) UNSIGNED NOT NULL , 
+	
+	PRIMARY KEY (`uid`)
+) ENGINE = InnoDB COMMENT = 'postings in an account'; 
+
+
+
+	
+	
+	
