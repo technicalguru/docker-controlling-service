@@ -9,11 +9,15 @@ import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.PostLoad;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -22,6 +26,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import rs.controlling.ControllingException;
+import rs.controlling.data.converter.AccountSubTypeConverter;
+import rs.controlling.data.converter.AccountTypeConverter;
 import rs.controlling.data.ledger.AccountPosting;
 import rs.controlling.data.ledger.AccountPostingType;
 
@@ -33,13 +39,21 @@ import rs.controlling.data.ledger.AccountPostingType;
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "accountNumber")
 @JsonIgnoreProperties({"​hibernateLazyInitializer", "handler"})
+@Table(name = "ctrl_accounts")
 public class Account {
 
 	@JsonIgnore
-	private @Id @GeneratedValue Long uid;
+	@Id 
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long uid;
 	
+	@Column(name = "account_number")
 	private String accountNumber;
+	@Column(name = "account_type")
+	@Convert(converter = AccountTypeConverter.class)
 	private AccountType accountType;
+	@Column(name = "account_subtype")
+	@Convert(converter = AccountSubTypeConverter.class)
 	private AccountSubType accountSubType;
 	private String name;
 	private String description;
