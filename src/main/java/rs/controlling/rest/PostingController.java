@@ -3,9 +3,17 @@
  */
 package rs.controlling.rest;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import rs.controlling.data.ledger.Posting;
+import rs.controlling.rest.util.PostingModelAssembler;
 import rs.controlling.service.PostingRequest;
 import rs.controlling.service.PostingService;
 
@@ -29,6 +38,9 @@ public class PostingController {
 	@Autowired
 	private PostingService service;
 
+	@Autowired
+	private PostingModelAssembler assembler;
+	
 	/**
 	 * Constructor.
 	 */
@@ -40,19 +52,26 @@ public class PostingController {
 	 * @return
 	 */
 	@GetMapping
-	public List<Posting> list() {
-		return service.list();
+	public CollectionModel<EntityModel<Posting>> list() {
+		List<EntityModel<Posting>> rc =  service.list().stream().map(assembler::toModel)
+			      .collect(Collectors.toList());
+
+		return CollectionModel.of(rc, linkTo(methodOn(PostingController.class).list()).withSelfRel());
 	}
 	
 	@PostMapping
-	public Posting create(@RequestBody PostingRequest newPosting) {
-		return service.create(newPosting);
+	public ResponseEntity<?> create(@RequestBody PostingRequest newPosting) {
+		Posting posting = service.create(newPosting);
+		EntityModel<Posting> entityModel = assembler.toModel(posting);
+		return ResponseEntity
+			      .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
+			      .body(entityModel);
 	}
 
-	// TODO never on uid, better on number
 	@GetMapping("/{number}")
-	public Posting get(@PathVariable String number) {
-		return service.findById(number);
+	public EntityModel<Posting> get(@PathVariable String number) {
+		Posting posting = service.findById(number);
+		return assembler.toModel(posting);
 	}
 
 }
