@@ -13,8 +13,8 @@ RUN    mkdir /home/spring/config \
 # Define running params
 USER spring:spring
 WORKDIR /home/spring
-#ENTRYPOINT ["java","-jar","/home/spring/app.jar"]
-ENTRYPOINT ["sleep","3600"]
+ENTRYPOINT ["java","-jar","/home/spring/app.jar"]
+#ENTRYPOINT ["sleep","3600"]
 
 # This part shall build layered but maven does not build like this yet
 # ARG DEPENDENCY=target/dependency
