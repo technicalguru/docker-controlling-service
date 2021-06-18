@@ -1,11 +1,15 @@
 FROM openjdk:8-jdk-alpine
-RUN addgroup -S spring && adduser -S spring -G spring
-USER spring:spring
+RUN addgroup -S spring \
+    && adduser -S spring -G spring
 
 # copy the application
 ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} /home/spring/app.jar
-RUN chmod 777 /home/spring/app.jar
+RUN    chmod 777 /home/spring/app.jar \
+    && chown spring:spring /home/spring/app.jar
+
+# Define running params
+USER spring:spring
 WORKDIR /home/spring
 ENTRYPOINT ["java","-jar","/home/spring/app.jar"]
 
