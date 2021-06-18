@@ -5,8 +5,10 @@ RUN addgroup -S spring \
 # copy the application
 ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} /home/spring/app.jar
-RUN    chmod 777 /home/spring/app.jar \
-    && chown spring:spring /home/spring/app.jar
+RUN    mkdir /home/spring/config \
+    && chmod 777 /home/spring/app.jar \
+    && chmod 777 /home/spring/config \
+    && chown -R spring:spring /home/spring
 
 # Define running params
 USER spring:spring
