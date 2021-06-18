@@ -4,8 +4,10 @@ USER spring:spring
 
 # copy the application
 ARG JAR_FILE=target/*.jar
-COPY ${JAR_FILE} app.jar
-ENTRYPOINT ["java","-jar","app.jar"]
+COPY ${JAR_FILE} /home/spring/app.jar
+RUN chmod 777 /home/spring/app.jar
+WORKDIR /home/spring
+ENTRYPOINT ["java","-jar","/home/spring/app.jar"]
 
 # This part shall build layered but maven does not build like this yet
 # ARG DEPENDENCY=target/dependency
