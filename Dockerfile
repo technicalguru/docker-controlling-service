@@ -5,7 +5,7 @@ USER spring:spring
 # copy the application
 ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} app.jar
-ENTRYPOINT ["java","-jar","/app.jar"]
+ENTRYPOINT ["java","-jar","app.jar"]
 
 # This part shall build layered but maven does not build like this yet
 # ARG DEPENDENCY=target/dependency
