@@ -97,6 +97,9 @@ public class AccountService {
 		if (account.getName() == null) {
 			throw new IncompleteRequestException("name", null);
 		}
+		if (account.isActive() == null) {
+			account.setActive(Boolean.TRUE);
+		}
 	}
 
 }
