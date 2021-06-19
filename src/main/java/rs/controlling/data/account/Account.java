@@ -120,7 +120,7 @@ public class Account {
 	public void setAccountNumber(String accountNumber) {
 		if ((accountNumber == null) || (accountNumber.length() < 4)) throw new ControllingException("Invalid account number: "+accountNumber);
 		try {
-			Integer.parseInt(accountNumber);
+			Integer.parseInt(accountNumber.substring(0, 4));
 		} catch (NumberFormatException e) {
 			throw new ControllingException("Invalid account number: "+accountNumber);
 		}
@@ -286,8 +286,17 @@ public class Account {
 	private void onLoad() {
 		this.accountClass  = AccountClass.get(accountNumber.substring(0, 1));
 		this.accountGroup  = AccountGroup.get(accountNumber.substring(1, 2));
-		this.subNumber     = Integer.parseInt(accountNumber.substring(2));
-
+		if (accountNumber.length() == 4) {
+			this.subNumber     = Integer.parseInt(accountNumber.substring(2));
+		} else {
+			// Strip out any extra characters
+			StringBuilder s = new StringBuilder();
+			char chars[] = accountNumber.toCharArray();
+			for (int i=2; i<chars.length; i++) {
+				if (Character.isDigit(chars[i])) s.append(chars[i]);
+			}
+			this.subNumber     = Integer.parseInt(s.toString());
+		}
 	}
 	
 	public static Account from(String number) {
