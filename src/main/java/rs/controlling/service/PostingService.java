@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import rs.controlling.data.account.Account;
 import rs.controlling.data.account.AccountRepository;
@@ -32,6 +33,7 @@ import rs.controlling.exception.PostingNotFoundException;
  *
  */
 @Component
+@Transactional
 public class PostingService {
 
 	@Autowired

@@ -6,6 +6,7 @@ package rs.controlling.rest;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,6 +15,7 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,6 +35,7 @@ import rs.controlling.service.PostingService;
  */
 @RestController
 @RequestMapping(path = "/postings")
+@Transactional(rollbackFor = Exception.class)
 public class PostingController {
 
 	@Autowired
@@ -68,6 +71,19 @@ public class PostingController {
 			      .body(entityModel);
 	}
 
+	@PostMapping(path = "/tx")
+	public CollectionModel<EntityModel<Posting>> create(@RequestBody List<PostingRequest> requests) {
+		List<Posting> postings = new ArrayList<>();
+		for (PostingRequest request : requests) {
+			Posting posting = service.create(request);
+			postings.add(posting);
+		}
+		List<EntityModel<Posting>> rc =  postings.stream().map(assembler::toModel)
+			      .collect(Collectors.toList());
+
+		return CollectionModel.of(rc, linkTo(methodOn(PostingController.class).list()).withSelfRel());		
+	}
+	
 	@GetMapping("/{number}")
 	public EntityModel<Posting> get(@PathVariable String number) {
 		Posting posting = service.findById(number);
