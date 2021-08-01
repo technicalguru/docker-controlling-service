@@ -25,7 +25,7 @@ public class PostingModelAssembler implements RepresentationModelAssembler<Posti
 	public EntityModel<Posting> toModel(Posting account) {
 		EntityModel<Posting> model = EntityModel.of(account, //
 			      linkTo(methodOn(PostingController.class).get(account.getPostingNumber())).withSelfRel(),
-			      linkTo(methodOn(PostingController.class).list(null, null, null)).withRel("postings"));
+			      linkTo(methodOn(PostingController.class).list(null, null, null, null, null, null)).withRel("postings"));
 		 
 		// We could do (even under certain conditions of account)
 		// model.add(linkTo(methodOn(PostingController.class).close(account.getPostingNumber())).withRel("close"));

@@ -5,6 +5,7 @@ package rs.controlling.data.ledger;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -16,5 +17,6 @@ public interface PostingRepository extends JpaRepository<Posting, Long> {
 
 	public Posting findByPostingNumber(String number);
 	public List<Posting> findBySourceAndSourceReference(String source, String sourceReference);
-	public List<Posting> findByAccountPostingsIn(List<AccountPosting> accountPostings);
+	public List<Posting> findBySourceAndSourceReference(String source, String sourceReference, Pageable pageable);
+	public List<Posting> findByAccountPostingsIn(List<AccountPosting> accountPostings, Pageable pageable);
 }
