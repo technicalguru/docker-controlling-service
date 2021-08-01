@@ -54,7 +54,7 @@ public class Posting {
 	@Column(name = "creation_time")
 	private ZonedDateTime creationTime;
 	@Column(name = "fiscal_year")
-	private int fiscalYear;
+	private Integer fiscalYear;
 	private String description;
 	
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "posting")
@@ -173,7 +173,7 @@ public class Posting {
 	/**
 	 * @return the fiscalYear
 	 */
-	public int getFiscalYear() {
+	public Integer getFiscalYear() {
 		return fiscalYear;
 	}
 
