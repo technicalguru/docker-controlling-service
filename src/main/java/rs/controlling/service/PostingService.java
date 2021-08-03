@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,8 +51,17 @@ public class PostingService {
 	public PostingService() {
 	}
 
-	public List<Posting> list() {
-		return postings.findAll();
+	public List<Posting> list(String accountNumber, Pageable pageable) {
+		Account account = accounts.findByAccountNumber(accountNumber);
+		List<AccountPosting> ap = details.findByAccount(account);
+		return postings.findByAccountPostingsIn(ap, pageable);
+	}
+	
+	public List<Posting> list(String source, String reference, Pageable pageable) {
+		Posting p = new Posting();
+		p.setSource(source);
+		p.setSourceReference(reference);
+		return postings.findAll(Example.of(p), pageable).toList();
 	}
 
 	public Posting create(PostingRequest posting) {
